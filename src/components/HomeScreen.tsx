@@ -23,9 +23,9 @@ const profiles = [
   },
   { 
     id: 'moallim', 
-    name: { en: 'Moallim', ur: 'معلم' }, 
+    name: { en: 'Qari Muhammad Usman Barvi', ur: 'قاری محمد عثمان باروی' }, 
     img: 'https://share.google/78LVaG0Z0Ja8bYIQk',
-    role: { en: 'Teacher', ur: 'مدرس' }
+    role: { en: 'Naat Khan / Imam', ur: 'نعت خواں / امام' }
   },
 ];
 

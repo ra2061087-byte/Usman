@@ -8,6 +8,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { HomeScreen } from './components/HomeScreen';
 import { PlaceholderPane } from './components/PlaceholderPane';
+import { Profiles } from './components/Profiles';
 import { Registration } from './components/Registration';
 import { Attendance } from './components/Attendance';
 import { Finance } from './components/Finance';
@@ -154,7 +155,7 @@ export default function App() {
             <div className="max-w-6xl mx-auto relative z-10">
               <Routes>
                 <Route path="/" element={<HomeScreen lang={lang} />} />
-                <Route path="/profiles" element={<PlaceholderPane lang={lang} title={{ en: 'Profiles', ur: 'پروفائلز' }} />} />
+                <Route path="/profiles" element={<Profiles lang={lang} />} />
                 <Route path="/login" element={<LoginPage type="student" />} />
                 <Route path="/admin-login" element={<LoginPage type="admin" />} />
                 
