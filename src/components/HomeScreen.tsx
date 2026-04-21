@@ -24,7 +24,7 @@ const profiles = [
   { 
     id: 'moallim', 
     name: { en: 'Moallim', ur: 'معلم' }, 
-    img: 'https://i.ibb.co/p3Y7Z3v/moallim.jpg',
+    img: 'https://share.google/78LVaG0Z0Ja8bYIQk',
     role: { en: 'Teacher', ur: 'مدرس' }
   },
 ];

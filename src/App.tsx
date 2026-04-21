@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { HomeScreen } from './components/HomeScreen';
 import { PlaceholderPane } from './components/PlaceholderPane';
@@ -19,8 +20,8 @@ import { Menu, X } from 'lucide-react';
 export default function App() {
   const [lang, setLang] = useState<Language>('ur');
   const [role, setRole] = useState<UserRole>(null);
-  const [activeId, setActiveId] = useState('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   // Auto-close sidebar on mobile
   useEffect(() => {
@@ -38,83 +39,55 @@ export default function App() {
 
   const handleLogout = () => {
     setRole(null);
-    setActiveId('home');
+    navigate('/');
   };
 
   const isUrdu = lang === 'ur';
 
-  const renderContent = () => {
-    switch (activeId) {
-      case 'home':
-        return <HomeScreen lang={lang} />;
-      case 'profiles':
-        return <PlaceholderPane lang={lang} title={{ en: 'Profiles', ur: 'پروفائلز' }} />;
-      case 'student-login':
-      case 'admin-login':
-        return (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 px-4 text-center">
-            <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl w-full max-w-md border-t-[12px] border-jamia-green-700 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-jamia-green-50 rounded-bl-full -mr-16 -mt-16 opacity-50" />
-              
-              <h2 className={cn("text-4xl font-bold text-jamia-green-900 mb-4 relative z-10", isUrdu && "font-urdu text-5xl")}>
-                {activeId === 'admin-login' ? (isUrdu ? 'ایڈمن لاگ ان' : 'Admin Login') : (isUrdu ? 'طالب علم لاگ ان' : 'Student Login')}
-              </h2>
-              <p className={cn("text-gray-500 mb-10 relative z-10", isUrdu && "font-urdu text-xl")}>
-                {isUrdu ? 'جامعہ پورٹل میں خوش آمدید' : 'Welcome to Jamia Portal'}
-              </p>
+  const LoginPage = ({ type }: { type: 'admin' | 'student' }) => (
+    <div className="flex flex-col items-center justify-center min-h-[60vh] py-12 px-4 text-center">
+      <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl w-full max-w-md border-t-[12px] border-jamia-green-700 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-jamia-green-50 rounded-bl-full -mr-16 -mt-16 opacity-50" />
+        
+        <h2 className={cn("text-4xl font-bold text-jamia-green-900 mb-4 relative z-10", isUrdu && "font-urdu text-5xl")}>
+          {type === 'admin' ? (isUrdu ? 'ایڈمن لاگ ان' : 'Admin Login') : (isUrdu ? 'طالب علم لاگ ان' : 'Student Login')}
+        </h2>
+        <p className={cn("text-gray-500 mb-10 relative z-10", isUrdu && "font-urdu text-xl")}>
+          {isUrdu ? 'جامعہ پورٹل میں خوش آمدید' : 'Welcome to Jamia Portal'}
+        </p>
 
-              <div className="space-y-6 relative z-10">
-                <div className="space-y-2">
-                  <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
-                    {isUrdu ? 'ای میل' : 'Email'}
-                  </label>
-                  <input type="email" defaultValue="admin@jamia.com" className={cn("w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 outline-none", isUrdu && "text-right")} />
-                </div>
-                <div className="space-y-2">
-                  <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
-                    {isUrdu ? 'پاس ورڈ' : 'Password'}
-                  </label>
-                  <input type="password" defaultValue="••••••••" className={cn("w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 outline-none", isUrdu && "text-right")} />
-                </div>
-              </div>
-
-              <div className="h-10" />
-
-              <button 
-                onClick={() => {
-                  setRole(activeId === 'admin-login' ? 'admin' : 'student');
-                  setActiveId('home');
-                }}
-                className={cn(
-                  "w-full bg-jamia-green-700 text-white py-5 rounded-2xl font-bold text-xl hover:bg-jamia-green-800 transition-all shadow-xl shadow-jamia-green-700/20 active:scale-95 relative z-10",
-                  isUrdu && "font-urdu text-2xl"
-                )}
-              >
-                {isUrdu ? 'لاگ ان کریں' : 'Login Now'}
-              </button>
-            </div>
+        <div className="space-y-6 relative z-10">
+          <div className="space-y-2">
+            <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
+              {isUrdu ? 'ای میل' : 'Email'}
+            </label>
+            <input type="email" defaultValue={type === 'admin' ? 'admin@jamia.com' : 'student@jamia.com'} className={cn("w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 outline-none", isUrdu && "text-right")} />
           </div>
-        );
-      case 'registration':
-        return <Registration lang={lang} />;
-      case 'reports':
-        return <PlaceholderPane lang={lang} title={{ en: 'Reports', ur: 'رپورٹس' }} />;
-      case 'lesson-entry':
-        return <LessonEntry lang={lang} />;
-      case 'prayer-record':
-        return <PrayerRecord lang={lang} />;
-      case 'attendance':
-        return <Attendance lang={lang} />;
-      case 'income':
-        return <Finance lang={lang} initialMode="income" />;
-      case 'expense':
-        return <Finance lang={lang} initialMode="expense" />;
-      case 'finance-reports':
-        return <Finance lang={lang} initialMode="income" />; // Showing shared finance view
-      default:
-        return <HomeScreen lang={lang} />;
-    }
-  };
+          <div className="space-y-2">
+            <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
+              {isUrdu ? 'پاس ورڈ' : 'Password'}
+            </label>
+            <input type="password" defaultValue="••••••••" className={cn("w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 outline-none", isUrdu && "text-right")} />
+          </div>
+        </div>
+
+        <div className="h-10" />
+
+        <button 
+          onClick={() => {
+            setRole(type);
+            navigate('/');
+          }}
+          className={cn(
+            "w-full bg-jamia-green-700 text-white py-5 rounded-2xl font-bold text-xl hover:bg-jamia-green-800 transition-all shadow-xl shadow-jamia-green-700/20 active:scale-95 relative z-10",
+            isUrdu && "font-urdu text-2xl"
+          )}
+        >
+          {isUrdu ? 'لاگ ان کریں' : 'Login Now'}
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className={cn(
@@ -125,12 +98,6 @@ export default function App() {
       <Sidebar 
         lang={lang} 
         role={role} 
-        activeId={activeId} 
-        setActiveId={(id) => {
-          setActiveId(id);
-          if (window.innerWidth < 768) setIsSidebarOpen(false);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
         setLang={setLang}
         onLogout={handleLogout}
         isOpen={isSidebarOpen}
@@ -185,7 +152,31 @@ export default function App() {
         <div className="p-4 md:p-10">
           <div className="min-h-[80vh] relative">
             <div className="max-w-6xl mx-auto relative z-10">
-              {renderContent()}
+              <Routes>
+                <Route path="/" element={<HomeScreen lang={lang} />} />
+                <Route path="/profiles" element={<PlaceholderPane lang={lang} title={{ en: 'Profiles', ur: 'پروفائلز' }} />} />
+                <Route path="/login" element={<LoginPage type="student" />} />
+                <Route path="/admin-login" element={<LoginPage type="admin" />} />
+                
+                {/* Admin Only Routes */}
+                {role === 'admin' ? (
+                  <>
+                    <Route path="/registration" element={<Registration lang={lang} />} />
+                    <Route path="/lesson-entry" element={<LessonEntry lang={lang} />} />
+                    <Route path="/prayer" element={<PrayerRecord lang={lang} />} />
+                    <Route path="/attendance" element={<Attendance lang={lang} />} />
+                    <Route path="/income" element={<Finance lang={lang} initialMode="income" />} />
+                    <Route path="/expense" element={<Finance lang={lang} initialMode="expense" />} />
+                    <Route path="/finance" element={<Finance lang={lang} initialMode="income" />} />
+                  </>
+                ) : null}
+
+                {/* Shared Restricted Routes */}
+                <Route path="/reports" element={<PlaceholderPane lang={lang} title={{ en: 'Reports', ur: 'رپورٹس' }} />} />
+
+                {/* 404/Fallback */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
             </div>
           </div>
 
