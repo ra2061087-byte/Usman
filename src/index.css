@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-urdu: "Noto Nastaliq Urdu", serif;
+  
+  --color-jamia-green-50: #f0fdf4;
+  --color-jamia-green-100: #dcfce7;
+  --color-jamia-green-600: #059669;
+  --color-jamia-green-700: #0d9488;
+  --color-jamia-green-800: #065f46;
+  --color-jamia-green-900: #064e3b;
+  
+  --color-jamia-gold: #fbbf24;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-[#f8fafc] text-[#111827];
+  }
+}
+
+.font-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+  line-height: 2.2;
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
