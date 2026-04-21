@@ -14,6 +14,11 @@ interface ProfileDetail {
   city?: { en: string; ur: string };
   address?: { en: string; ur: string };
   work?: { en: string; ur: string };
+  education?: { en: string[]; ur: string[] };
+  services?: { en: string[]; ur: string[] };
+  skills?: { en: string[]; ur: string[] };
+  characteristics?: { en: string[]; ur: string[] };
+  institutions?: { en: string[]; ur: string[] };
 }
 
 const detailedProfiles: ProfileDetail[] = [
@@ -33,14 +38,72 @@ const detailedProfiles: ProfileDetail[] = [
   },
   { 
     id: 'moallim', 
-    name: { en: 'Qari Muhammad Usman Barvi', ur: 'قاری محمد عثمان باروی' }, 
-    fatherName: { en: 'Qari Ghulam Mustafa Barvi', ur: 'قاری غلام مصطفیٰ باروی' },
+    name: { en: 'Hazrat Allama Maulana Muhammad Usman Barvi', ur: 'حضرت علامہ مولانا محمد عثمان باروی' }, 
+    fatherName: { en: 'Hazrat Allama Maulana Qari Ghulam Mujtaba Barvi', ur: 'حضرت علامہ مولانا قاری غلام مجتبیٰ باروی' },
     img: 'https://share.google/78LVaG0Z0Ja8bYIQk',
-    role: { en: 'Teacher', ur: 'مدرس' },
+    role: { en: 'Teacher / Moallim', ur: 'مدرس / معلم' },
     work: { en: 'Naat Khan / Imam', ur: 'نعت خواں / امام' },
-    phone: '0123456678',
-    city: { en: 'Faisalabad', ur: 'فیصل آباد' },
-    address: { en: '109 Check Jaranwala', ur: '109 چک جڑانوالہ' }
+    phone: '03065253184',
+    city: { en: 'Jaranwala, Faisalabad', ur: 'جڑانوالہ، فیصل آباد' },
+    address: { en: 'Jamia Naqshbandia Barvia Rizvia, Jaranwala', ur: 'جامعہ نقشبندیہ بارویہ رضویہ، جڑانوالہ' },
+    education: {
+      en: [
+        'Hifz-ul-Quran: Madrasa Ma\'arif-ul-Quran, Faisalabad',
+        'Dars-e-Nizami: Jamia Ittehad-ul-Madaris, Faisalabad'
+      ],
+      ur: [
+        'حفظ القرآن: مدرسہ معارف القرآن، فیصل آباد',
+        'درسِ نظامی: جامعہ اتحاد المدارس، فیصل آباد'
+      ]
+    },
+    services: {
+      en: [
+        'Imamat & Khatabat since 2012',
+        'Friday Sermons & Religious Lectures',
+        'Religious Education & Training for Children'
+      ],
+      ur: [
+        'امامت و خطابت: 2012 سے تا حال',
+        'جمعہ خطبہ اور دینی بیانات',
+        'بچوں کی دینی تعلیم و تربیت (خصوصاً حفظِ قرآن)'
+      ]
+    },
+    skills: {
+      en: [
+        'Recitation of Quran with Melodious Voice',
+        'Naat Khawani',
+        'Urdu & Punjabi Khatabat',
+        'Teaching Hifz-ul-Quran'
+      ],
+      ur: [
+        'قرآن مجید کی خوش الحانی سے تلاوت',
+        'نعت خوانی',
+        'اردو و پنجابی خطابت',
+        'بچوں کو حفظِ قرآن پڑھانا'
+      ]
+    },
+    characteristics: {
+      en: [
+        'Soft-spoken and well-mannered',
+        'Reformer and Guide in society',
+        'Messenger of Peace, Love, and Unity'
+      ],
+      ur: [
+        'نرم مزاج اور خوش اخلاق',
+        'معاشرے میں اصلاح اور رہنمائی کرنے والے',
+        'امن، محبت اور اتحاد کا پیغام دینے والے'
+      ]
+    },
+    institutions: {
+      en: [
+        'Jamia Masjid Darbar Wali, Chak No. 109, Jaranwala',
+        'Jamia Naqshbandia Barvia Rizvia, Jaranwala'
+      ],
+      ur: [
+        'جامع مسجد دربار والی، چک نمبر 109، جڑانوالہ',
+        'جامعہ نقشبندیہ بارویہ رضویہ، جڑانوالہ'
+      ]
+    }
   },
 ];
 
@@ -90,7 +153,7 @@ export const Profiles: React.FC<ProfilesProps> = ({ lang }) => {
             </div>
 
             {/* Content */}
-            <div className="flex-1 p-8 md:p-10 space-y-8">
+            <div className="flex-1 p-8 md:p-10 space-y-10">
               <div className={cn("flex flex-col md:flex-row justify-between items-start gap-4", isUrdu && "md:flex-row-reverse")}>
                 <div className={isUrdu ? "text-right" : "text-left"}>
                   <h3 className={cn("text-2xl md:text-3xl font-bold text-gray-900 mb-1", isUrdu && "font-urdu text-4xl")}>
@@ -107,52 +170,123 @@ export const Profiles: React.FC<ProfilesProps> = ({ lang }) => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-gray-100">
+              {/* Contact Info Bar */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 py-8 border-y border-gray-100">
                 {profile.fatherName && (
-                  <div className={cn("flex items-center gap-4", isUrdu && "flex-row-reverse")}>
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                      <FaUserFriends />
+                  <div className={cn("flex items-start gap-3", isUrdu && "flex-row-reverse")}>
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                      <FaUserFriends size={14} />
                     </div>
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">{isUrdu ? 'والد کا نام' : 'Father\'s Name'}</p>
-                      <p className={cn("font-bold text-gray-700", isUrdu && "font-urdu text-lg")}>{profile.fatherName[lang]}</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-none mb-1">{isUrdu ? 'والد کا نام' : 'Father'}</p>
+                      <p className={cn("font-bold text-gray-700 leading-tight", isUrdu && "font-urdu")}>{profile.fatherName[lang]}</p>
                     </div>
                   </div>
                 )}
                 
                 {profile.phone && (
-                  <div className={cn("flex items-center gap-4", isUrdu && "flex-row-reverse")}>
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                      <FaPhone />
+                  <div className={cn("flex items-start gap-3", isUrdu && "flex-row-reverse")}>
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                      <FaPhone size={14} />
                     </div>
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">{isUrdu ? 'فون نمبر' : 'Phone Number'}</p>
-                      <p className="font-bold text-gray-700 font-mono">{profile.phone}</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-none mb-1">{isUrdu ? 'رابطہ' : 'Contact'}</p>
+                      <p className="font-bold text-gray-700 leading-tight font-mono">{profile.phone}</p>
                     </div>
                   </div>
                 )}
 
                 {profile.city && (
-                  <div className={cn("flex items-center gap-4", isUrdu && "flex-row-reverse")}>
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                      <FaMapMarkerAlt />
+                  <div className={cn("flex items-start gap-3", isUrdu && "flex-row-reverse")}>
+                    <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 shrink-0">
+                      <FaMapMarkerAlt size={14} />
                     </div>
                     <div>
-                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">{isUrdu ? 'شہر' : 'City'}</p>
-                      <p className={cn("font-bold text-gray-700", isUrdu && "font-urdu text-lg")}>{profile.city[lang]}</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-none mb-1">{isUrdu ? 'شہر' : 'City'}</p>
+                      <p className={cn("font-bold text-gray-700 leading-tight", isUrdu && "font-urdu")}>{profile.city[lang]}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Detailed Sections */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12">
+                {profile.education && (
+                  <div className="space-y-4">
+                    <h4 className={cn("text-sm font-black uppercase tracking-[0.2em] text-gray-300 border-b border-gray-50 pb-2", isUrdu && "text-right")}>
+                      {isUrdu ? 'دینی تعلیم' : 'Education'}
+                    </h4>
+                    <ul className={cn("space-y-2 list-none", isUrdu && "text-right")}>
+                      {profile.education[lang].map((item, i) => (
+                        <li key={i} className={cn("text-gray-600 flex gap-3", isUrdu ? "flex-row-reverse" : "flex-row")}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-jamia-gold mt-2 shrink-0" />
+                          <span className={cn(isUrdu && "font-urdu")}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {profile.services && (
+                  <div className="space-y-4">
+                    <h4 className={cn("text-sm font-black uppercase tracking-[0.2em] text-gray-300 border-b border-gray-50 pb-2", isUrdu && "text-right")}>
+                      {isUrdu ? 'دینی خدمات' : 'Services'}
+                    </h4>
+                    <ul className={cn("space-y-2 list-none", isUrdu && "text-right")}>
+                      {profile.services[lang].map((item, i) => (
+                        <li key={i} className={cn("text-gray-600 flex gap-3", isUrdu ? "flex-row-reverse" : "flex-row")}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-jamia-gold mt-2 shrink-0" />
+                          <span className={cn(isUrdu && "font-urdu")}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {profile.skills && (
+                  <div className="space-y-4">
+                    <h4 className={cn("text-sm font-black uppercase tracking-[0.2em] text-gray-300 border-b border-gray-50 pb-2", isUrdu && "text-right")}>
+                      {isUrdu ? 'مہارتیں' : 'Skills'}
+                    </h4>
+                    <div className={cn("flex flex-wrap gap-2", isUrdu && "flex-row-reverse")}>
+                      {profile.skills[lang].map((skill, i) => (
+                        <span key={i} className={cn("px-3 py-1 bg-gray-50 border border-gray-100 rounded-lg text-xs font-bold text-gray-500", isUrdu && "font-urdu pb-2")}>
+                          {skill}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}
 
-                {profile.address && (
-                  <div className={cn("flex items-center gap-4", isUrdu && "flex-row-reverse")}>
-                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                      <FaMapMarkerAlt />
-                    </div>
-                    <div>
-                      <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest">{isUrdu ? 'پتہ' : 'Address'}</p>
-                      <p className={cn("font-bold text-gray-700", isUrdu && "font-urdu text-lg")}>{profile.address[lang]}</p>
-                    </div>
+                {profile.characteristics && (
+                  <div className="space-y-4">
+                    <h4 className={cn("text-sm font-black uppercase tracking-[0.2em] text-gray-300 border-b border-gray-50 pb-2", isUrdu && "text-right")}>
+                      {isUrdu ? 'اخلاق و کردار' : 'Character'}
+                    </h4>
+                    <ul className={cn("space-y-2 list-none", isUrdu && "text-right")}>
+                      {profile.characteristics[lang].map((item, i) => (
+                        <li key={i} className={cn("text-gray-600 flex gap-3", isUrdu ? "flex-row-reverse" : "flex-row")}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-jamia-green-600 mt-2 shrink-0" />
+                          <span className={cn(isUrdu && "font-urdu")}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {profile.institutions && (
+                  <div className="space-y-4">
+                    <h4 className={cn("text-sm font-black uppercase tracking-[0.2em] text-gray-300 border-b border-gray-50 pb-2", isUrdu && "text-right")}>
+                      {isUrdu ? 'مساجد و ادارے' : 'Institutions'}
+                    </h4>
+                    <ul className={cn("space-y-2 list-none", isUrdu && "text-right")}>
+                      {profile.institutions[lang].map((item, i) => (
+                        <li key={i} className={cn("text-gray-600 flex gap-3", isUrdu ? "flex-row-reverse" : "flex-row")}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-2 shrink-0" />
+                          <span className={cn(isUrdu && "font-urdu")}>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
               </div>
