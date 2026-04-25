@@ -43,7 +43,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ lang }) => {
           بِسْمِ اللہِ الرَّحْمٰنِ الرَّحِیْمِ
         </h2>
         <h1 className="text-4xl md:text-5xl font-urdu font-black text-[#111827] tracking-tight">
-          جامعہ نقشبندیہ باروی رضویہ
+          جامعہ نقشبندیہ بارویہ رضویہ
         </h1>
         <p className="text-lg md:text-xl font-urdu text-[#6b7280]">
           چک نمبر 109 گ ب بجاجانوالہ جڑانوالہ فیصل آباد
@@ -93,8 +93,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ lang }) => {
           isUrdu && "font-urdu text-right"
         )}>
           {isUrdu 
-            ? 'جامعہ نقشبندیہ باروی رضویہ میں آپ کا خیر مقدم ہے۔ یہ پورٹل جامعہ کے نظام کو بہتر بنانے اور طلبہ کی بہترین تعلیم و تربیت کے لیے ڈیزائن کیا گیا ہے۔' 
-            : 'Welcome to Jamia Naqshbandia Barvi Rizvia. This portal is designed to improve the management of the Jamia and provide the best education and training for students.'}
+            ? 'جامعہ نقشبندیہ بارویہ رضویہ میں آپ کا خیر مقدم ہے۔ یہ پورٹل جامعہ کے نظام کو بہتر بنانے اور طلبہ کی بہترین تعلیم و تربیت کے لیے ڈیزائن کیا گیا ہے۔' 
+            : 'Welcome to Jamia Naqshbandia Barvia Rizvia. This portal is designed to improve the management of the Jamia and provide the best education and training for students.'}
         </p>
       </div>
     </div>
