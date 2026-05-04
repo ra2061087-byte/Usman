@@ -17,12 +17,40 @@ import { PrayerRecord } from './components/PrayerRecord';
 import { Language, UserRole } from './types';
 import { cn } from './lib/utils';
 import { Menu, X } from 'lucide-react';
+import { 
+  auth 
+} from './lib/firebase';
+import { 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  onAuthStateChanged,
+  signOut,
+  User as FirebaseUser
+} from 'firebase/auth';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('ur');
   const [role, setRole] = useState<UserRole>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        // If logged in via Google and email is admin email, set role to admin
+        // Note: For production, roles should be stored in Firestore 'roles' collection
+        if (currentUser.email === 'ra2061087@gmail.com') {
+          setRole('admin');
+        } else {
+          // Default to student role for any other authenticated user for demo purposes
+          setRole('student');
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Auto-close sidebar on mobile
   useEffect(() => {
@@ -38,17 +66,38 @@ export default function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLogout = () => {
-    setRole(null);
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setRole(null);
+      navigate('/');
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
   };
 
   const isUrdu = lang === 'ur';
 
   const LoginPage = ({ type }: { type: 'admin' | 'student' }) => {
-    const [email, setEmail] = useState(type === 'admin' ? '' : '');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleGoogleLogin = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        navigate('/');
+      } catch (err) {
+        console.error(err);
+        setError(isUrdu ? 'گوگل لاگ ان میں دشواری پیش آئی۔' : 'Google login failed.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
     const handleLogin = () => {
       if (type === 'admin') {
@@ -59,8 +108,6 @@ export default function App() {
           setError(isUrdu ? 'غلط ای میل یا پاس ورڈ' : 'Invalid email or password');
         }
       } else {
-        // Student login: Any non-empty email and password for now
-        // "password hr ik ky alg ho" - implying multiple students can login with their own
         if (email.trim() && password.length >= 4) {
           setRole('student');
           navigate('/');
@@ -88,8 +135,25 @@ export default function App() {
                 {error}
               </div>
             )}
-            <div className="space-y-2">
-              <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
+
+            {type === 'admin' && (
+              <button 
+                onClick={handleGoogleLogin}
+                disabled={loading}
+                className="w-full h-14 flex items-center justify-center space-x-3 bg-white border border-gray-200 rounded-2xl font-bold text-gray-700 hover:bg-gray-50 transition-all shadow-sm active:scale-95"
+              >
+                <img src="https://www.google.com/favicon.ico" className="w-5 h-5" alt="Google" />
+                <span>{isUrdu ? 'گوگل سے لاگ ان کریں' : 'Login with Google'}</span>
+              </button>
+            )}
+
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-gray-400">{isUrdu ? 'یا' : 'OR'}</span></div>
+            </div>
+
+            <div className="space-y-2 text-left">
+              <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 px-2", isUrdu && "text-right font-urdu text-sm")}>
                 {isUrdu ? 'ای میل' : 'Email'}
               </label>
               <input 
@@ -100,8 +164,8 @@ export default function App() {
                 className={cn("w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 outline-none", isUrdu && "text-right")} 
               />
             </div>
-            <div className="space-y-2">
-              <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 text-left px-2", isUrdu && "text-right font-urdu text-sm")}>
+            <div className="space-y-2 text-left">
+              <label className={cn("block text-xs font-black uppercase tracking-widest text-gray-400 px-2", isUrdu && "text-right font-urdu text-sm")}>
                 {isUrdu ? 'پاس ورڈ' : 'Password'}
               </label>
               <input 

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { cn } from '../lib/utils';
-import { UserPlus, Save, CheckCircle2 } from 'lucide-react';
+import { UserPlus, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { db, handleFirestoreError, OperationType } from '../lib/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 interface RegistrationProps {
   lang: Language;
@@ -12,6 +14,7 @@ export const Registration: React.FC<RegistrationProps> = ({ lang }) => {
   const isUrdu = lang === 'ur';
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     fatherName: '',
@@ -26,9 +29,15 @@ export const Registration: React.FC<RegistrationProps> = ({ lang }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    setError('');
+    
+    try {
+      const path = 'students';
+      await addDoc(collection(db, path), {
+        ...formData,
+        createdAt: serverTimestamp()
+      });
+      
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
       setFormData({
@@ -41,7 +50,18 @@ export const Registration: React.FC<RegistrationProps> = ({ lang }) => {
         email: '',
         password: ''
       });
-    }, 1500);
+    } catch (err) {
+      console.error(err);
+      setError(isUrdu ? 'ڈیٹا محفوظ کرنے میں دشواری پیش آئی۔ براہ کرم دوبارہ کوشش کریں یا ایڈمن سے رابطہ کریں۔' : 'Error saving data. Please try again or contact admin.');
+      // handleFirestoreError will throw, so we catch it here if we want to show a UI message
+      try {
+        handleFirestoreError(err, OperationType.WRITE, 'students');
+      } catch (fErr) {
+        // Logged but already handled UI error
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = cn(
@@ -66,6 +86,11 @@ export const Registration: React.FC<RegistrationProps> = ({ lang }) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
+        {error && (
+          <div className={cn("p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl font-bold text-sm", isUrdu && "text-right font-urdu text-lg")}>
+            {error}
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
             <div>
